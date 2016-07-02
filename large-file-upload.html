@@ -1,0 +1,101 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script src="resumable.js"></script>
+
+<dom-module id="large-file-upload">
+
+  <template>
+
+    <style>
+
+    </style>
+
+    <button id="browseButton">Browse</button>
+
+    <button id="cancel" on-tap="cancelDownload">cancel</button>
+
+
+  </template>
+
+
+  <script>
+
+    Polymer({
+
+      is: 'large-file-upload',
+
+      properties: {
+        /**
+         * Resumable object to handle uploading
+         */
+        resumable: Object,
+      },
+
+
+      ready: function () {
+        console.log('readdddy');
+
+
+        this.resumable = new Resumable({
+//          target: 'http://api.northkitetv.dev:3000/v1/videos/upload',
+          target: 'http://staging.tailos.com/test/uploadtest.php'
+
+        });
+        // Resumable.js isn't supported, fall back on a different method
+        if (!this.resumable.support) location.href = '/some-old-crappy-uploader';
+
+        if (this.resumable.support) {
+          console.log(this.resumable);
+        }
+
+        var button = this.shadowRoot.querySelector('#browseButton');
+        console.log(button);
+        this.resumable.assignBrowse(this.shadowRoot.querySelector('#browseButton'));
+
+
+        this.resumable.on('fileError', function (file, message) {
+          console.log("error: " + message);
+          this.cancel();
+        });
+
+        this.resumable.on('error', function (message, file) {
+          console.log("error: " + message);
+          this.cancel();
+        });
+
+        this.resumable.on('fileAdded', function (file) {
+          console.log('Adding file');
+          console.log(file);
+          console.log(this);
+          this.upload();
+        });
+
+        this.resumable.on('fileSuccess', function (file, message) {
+          console.log('Success');
+        });
+      },
+
+      cancelDownload: function () {
+        console.log('Canceling download');
+        this.r.cancel();
+      },
+
+      _helloWorld: function () {
+
+      }
+
+
+    });
+
+
+  </script>
+
+</dom-module>
+
+
+
+
+
+
+
+
