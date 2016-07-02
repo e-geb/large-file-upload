@@ -14,7 +14,8 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
-*.idea
+config.js
+idea/
 bower_components/
 
 
