@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
+<script src="../config.js"></script>
 
-<script src="config.js"></script>
+
 <dom-module id="large-file-upload">
 
   <template>
@@ -26,20 +27,44 @@
         /**
          * Resumable object to handle uploading
          */
-
-        resumable: Object,
+         
+            resumable: {
+          type: String,
+        
+        },
+          /**
+         * Where the file is going to be uploaded.
+         */
+       target: {
+          type: String,
+          value: '/',
+        },
+         /**
+         * The backend script.
+         */
+          server_target: {
+          type: String,
+          value: '/',
+        },
+         /**
+         * The fallback uploader.
+         */
+        fallback: {
+          type: String,
+          value: '/some-old-crappy-uploader',
+        },
+       
 
       },
 
 
-      ready: function () {
-
+ready: function(){
         this.resumable = new Resumable({
-          target: SERVER_TARGET
+          target: this.server_target
         });
 
         // Resumable.js isn't supported, fall back on a different method
-        if (!this.resumable.support) location.href = '/some-old-crappy-uploader';
+        if (!this.resumable.support) location.href = this.fallback;
 
         if (this.resumable.support) {
           console.log(this.resumable);
@@ -77,6 +102,7 @@
         this.resumable.cancel();
       },
     });
+
 
 
     /*
@@ -137,7 +163,7 @@
           uploadMethod: 'POST',
           testMethod: 'GET',
           prioritizeFirstAndLastChunk:false,
-          target:'/',
+          target:this.target,
           parameterNamespace:'',
           testChunks:true,
           generateUniqueIdentifier:null,
@@ -201,10 +227,10 @@
           $.events.push(event.toLowerCase(), callback);
         };
         $.fire = function(){
-          // `arguments` is an object, not array, in FF, so:
+          // arguments is an object, not array, in FF, so:
           var args = [];
           for (var i=0; i<arguments.length; i++) args.push(arguments[i]);
-          // Find event listeners, and support pseudo-event `catchAll`
+          // Find event listeners, and support pseudo-event catchAll
           var event = args[0].toLowerCase();
           for (var i=0; i<=$.events.length; i+=2) {
             if($.events[i]==event) $.events[i+1].apply($,args.slice(1));
@@ -1065,7 +1091,7 @@
 
 </dom-module>
 
-
+<large-file-upload></large-file-upload>
 
 
 
