@@ -26,7 +26,9 @@
         /**
          * Resumable object to handle uploading
          */
+target: String, 
         resumable: Object,
+
       },
 
 
@@ -135,7 +137,7 @@
           uploadMethod: 'POST',
           testMethod: 'GET',
           prioritizeFirstAndLastChunk:false,
-          target:'/',
+          target:this.target,
           parameterNamespace:'',
           testChunks:true,
           generateUniqueIdentifier:null,
